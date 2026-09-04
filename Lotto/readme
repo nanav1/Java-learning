@@ -1,0 +1,67 @@
+## 기존
+	public int[] createLotto() {
+		// 번호생성 : 로또번호 6개 + 보너스 1개를 생성하면서 중복을 제거하기
+		int lotto[] = new int[7];
+		for(int i=0; i<lotto.length; i++) {
+			lotto[i] = ran.nextInt(45-1+1)+1;
+			//중복검사
+			for(int j=0; j<i; j++) {
+				if(lotto[i]==lotto[j]) {
+					i--;
+					break;
+				}
+			}
+		}
+		return lotto;
+	}
+
+## 개선버전
+	public List<Integer> createLotto() {
+		//중복을 허용하지 않는 LinkedHashSet으로 중복없는 로또번호 수집
+		LinkedHashSet<Integer> lottoNum = new LinkedHashSet<>();
+
+		
+		while(lottoNum.size()<7) {
+			lottoNum.add(ran.nextInt(45)+1);
+		}
+		
+		//인덱스가 있는 ArrayList로 이동
+		List<Integer> lotto = new ArrayList<Integer>(lottoNum);
+
+		return lotto;
+	}
+
+
+## 개선점
+처음엔 값을 LinkedHashSet로 받아서 중복검사+순서기억을 간편하게 하고,
+
+인덱스가 있는 ArrayList로 옮김으로써 코드를 축소함
+
+
+
+## 기존
+	public void lottoBubbleSort(int lotto[]) {
+		for(int i=0; i<lotto.length-2; i++) {
+			for(int j=0; j<lotto.length-2-i; j++) {
+				if(lotto[j] > lotto[j+1]) {
+					int temp = lotto[j];
+					lotto[j] = lotto[j+1];
+					lotto[j+1] = temp;
+				}
+			}
+		}
+	}
+
+## 개선버전
+	public void lottoSort(List<Integer> lotto) {
+		// 보너스 빼고 앞 6개만 오름차순
+		Collections.sort(lotto.subList(0, 6));
+	}
+
+## 개선점
+ 내장메소드를 이용해 간편하게 정렬(마지막 보너스를 제외한 부분만 오름차순)
+
+
+## 느낀점
+
+자바는 역시 이런 편의성 때문에 쓰는구나 라는걸 느낌
