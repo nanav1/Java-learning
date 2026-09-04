@@ -1,0 +1,109 @@
+package Collection;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Random;
+import java.util.Scanner;
+
+import Exception.MyException;
+
+public class LottoOopCollection {
+
+	Scanner scan = new Scanner(System.in);
+	Random ran = new Random();
+	
+	public LottoOopCollection() {
+
+	}
+	
+	//게임수, 계속여부 입력
+	public int getInt(String msg) {
+		do {
+			//잘못입력받으면 정수를 입력받을때까지 다시 입력받아야함
+			try {
+			System.out.print(msg+"=");
+			int inData = Integer.parseInt(scan.nextLine());
+			return inData;
+			}catch(NumberFormatException nfe) {
+				System.out.println("예외메시지 : "+nfe.getMessage()+"........정수를 입력하세요.......");
+			}
+		}while(true);
+	}
+	
+	//번호 7개 만들기 : 1~45까지 난수를 7개 만들어
+	public List<Integer> createLotto() {
+		//중복을 허용하지 않는 LinkedHashSet으로 중복없는 로또번호 수집
+		LinkedHashSet<Integer> lottoNum = new LinkedHashSet<>();
+
+		
+		while(lottoNum.size()<7) {
+			lottoNum.add(ran.nextInt(45)+1);
+		}
+		
+		//인덱스가 있는 ArrayList로 이동
+		List<Integer> lotto = new ArrayList<Integer>(lottoNum);
+
+		return lotto;
+	}
+	
+	//번호 정렬
+	public void lottoSort(List<Integer> lotto) {
+		// 보너스 빼고 앞 6개만 오름차순
+		Collections.sort(lotto.subList(0, 6));
+	}
+	
+	//출력하기
+	public void lottoPrint(List<Integer> lotto, int n) {
+		System.out.printf("%2d게임=[", n);
+		for(int i=0; i<lotto.size()-1; i++) {
+			System.out.printf("%3d", lotto.get(i));
+			if(i==5) {
+				System.out.print("]");
+			}else {
+				System.out.print(",");
+			}
+		}
+		System.out.printf(", bonus=%d\n", lotto.get(6));
+	}
+	
+	public void lottoStart() {
+		do {
+			try {
+				int game = getInt("게임수");
+				if(game<1 || game >100) {
+					throw new MyException();
+				}
+				for(int n=1;n<=game;n++) {
+					List<Integer> lotto = createLotto();
+					lottoSort(lotto);
+					lottoPrint(lotto, n);
+				}
+				int que;
+				while(true) {
+					try {
+						que = getInt("계속하시겠습니까(1.예, 2.아니오)?");
+						if(que<1 || que>2) {
+							throw new MyException("메뷰는 1or2f를입력하세요");
+						}else {
+							break;
+						}
+					}catch(MyException me2) {
+					System.out.println(me2.getMessage());
+					}					
+				}
+				if(que==2) break;
+			}catch(MyException me) {
+				System.out.println(me.getMessage());
+			}
+		}while(true);
+	}
+	
+	public static void main(String[] args) {
+		LottoOopCollection Oop = new LottoOopCollection();
+		Oop.lottoStart();
+		
+	}
+
+}
